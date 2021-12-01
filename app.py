@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-local = True
+local = False
 server_url = "0.0.0.0"
 local_url = "192.168.0.172"
 apphost = server_url if local == False else local_url
@@ -21,7 +21,6 @@ def login(id):
 	if "owner" + str(id) not in clients:
 		clients.append("owner" + str(id))
 
-	print("owner" + str(id))
 	join_room("owner" + str(id))
 
 @socket.on("socket/business/logout")
@@ -30,7 +29,7 @@ def logout(id):
 		clients.remove("owner" + str(id))
 
 	leave_room("owner" + str(id))
-	
+
 # main
 @socket.on("socket/doneService")
 def doneService(data):
@@ -102,7 +101,6 @@ def login(id):
 	if "user" + str(id) not in clients:
 		clients.append("user" + str(id))
 
-	print("user" + str(id))
 	join_room("user" + str(id))
 
 @socket.on("socket/user/logout")
