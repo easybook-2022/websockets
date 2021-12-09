@@ -54,6 +54,20 @@ def acceptRequest(data):
 	socket.emit("addToNotifications", data, to=booker)
 	socket.emit("addToNotifications", data, to=users)
 
+@socket.on("socket/business/cancelReservation")
+def cancelReservation(data):
+	socket.emit("addToNotifications", data, to=data["receiver"])
+
+
+
+
+
+
+
+
+
+
+
 # booktime
 @socket.on("socket/rescheduleAppointment")
 def rescheduleAppointment(data):
