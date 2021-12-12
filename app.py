@@ -250,4 +250,4 @@ def getDinersPayments(data):
 	socket.emit("addToNotifications", data, to=data["receiver"])
 
 if __name__ == "__main__":
-	socket.run(app, host=apphost, port=5001, use_reloader=True)
+	socket.run(app, host=apphost, port=5002, use_reloader=True)
