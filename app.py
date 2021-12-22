@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-local = True
+local = False
 server_url = "0.0.0.0"
 local_url = "192.168.0.172"
 apphost = server_url if local == False else local_url
@@ -60,14 +60,6 @@ def cancelReservation(data):
 
 
 
-
-
-
-
-
-
-
-
 # booktime
 @socket.on("socket/rescheduleAppointment")
 def rescheduleAppointment(data):
@@ -100,14 +92,6 @@ def deleteReservation(data):
 @socket.on("socket/deliverRound")
 def deliverRound(data):
 	socket.emit("updateRounds", data, to=data["receiver"])
-
-
-
-
-
-
-
-
 
 
 # user-side
