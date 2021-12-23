@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-local = False
+local = True
 server_url = "0.0.0.0"
 local_url = "192.168.0.172"
 apphost = server_url if local == False else local_url
