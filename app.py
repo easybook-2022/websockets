@@ -58,6 +58,13 @@ def acceptRequest(data):
 def cancelReservation(data):
 	socket.emit("addToNotifications", data, to=data["receiver"])
 
+@socket.on("socket/business/cancelAppointment")
+def cancelAppointment(data):
+	socket.emit("addToNotifications", data, to=data['receiver'])
+
+@socket.on("socket/business/requestPayment")
+def requestPayment(data):
+	socket.emit("addToNotifications", data, to=data['receiver'])
 
 
 # booktime
@@ -165,6 +172,10 @@ def cancelCartOrder(data):
 @socket.on("socket/confirmCartOrder")
 def confirmCartOrder(data):
 	socket.emit("updateOrderers", data, to=data["receiver"])
+
+@socket.on("socket/confirmPayment")
+def confirmPayment(data):
+	socket.emit("updateSchedules", data, to=data["receiver"])
 
 # cart
 @socket.on("socket/updateCallfor")
