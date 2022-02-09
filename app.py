@@ -1,10 +1,11 @@
 from flask import Flask
 from flask_socketio import SocketIO, emit, join_room, leave_room
 
-local = True
+test = True
+
 server_url = "0.0.0.0"
 local_url = "192.168.0.172"
-apphost = server_url if local == False else local_url
+apphost = server_url if test == False else local_url
 clients = []
 
 app = Flask(__name__)
@@ -31,17 +32,21 @@ def logout(id):
 	leave_room("owner" + str(id))
 
 # main
+@socket.on("socket/setProductPrice")
+def setProductPrice(data):
+	socket.emit("updateNotifications", data, to=data["receiver"])
+
 @socket.on("socket/doneService")
 def doneService(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/canServeDiners")
 def canServeDiners(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
-@socket.on("socket/cancelRequest")
+@socket.on("socket/business/cancelRequest")
 def cancelRequest(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/business/acceptRequest")
 def acceptRequest(data):
@@ -51,55 +56,58 @@ def acceptRequest(data):
 	locations = receivers["locations"]
 
 	socket.emit("updateRequests", data, to=locations)
-	socket.emit("addToNotifications", data, to=booker)
-	socket.emit("addToNotifications", data, to=users)
+	socket.emit("updateNotifications", data, to=booker)
+	socket.emit("updateNotifications", data, to=users)
 
 @socket.on("socket/business/cancelReservation")
 def cancelReservation(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/business/cancelAppointment")
 def cancelAppointment(data):
-	socket.emit("addToNotifications", data, to=data['receiver'])
+	socket.emit("updateNotifications", data, to=data['receiver'])
 
 @socket.on("socket/business/requestPayment")
 def requestPayment(data):
-	socket.emit("addToNotifications", data, to=data['receiver'])
+	socket.emit("updateNotifications", data, to=data['receiver'])
 
 
 # booktime
 @socket.on("socket/rescheduleAppointment")
 def rescheduleAppointment(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # cartorders
 @socket.on("socket/orderReady")
 def orderReady(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/productPurchased")
 def productPurchased(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/receivePayment")
 def receivePayment(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # makereservation
 @socket.on("socket/business/rescheduleReservation")
 def makeReservation(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # dinersorders
 @socket.on("socket/deleteReservation")
 def deleteReservation(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # diningorders
 @socket.on("socket/deliverRound")
 def deliverRound(data):
 	socket.emit("updateRounds", data, to=data["receiver"])
 
+@socket.on("socket/setOrderPrice")
+def setOrderPrice(data):
+	socket.emit("updateRounds", data, to=data["receiver"])
 
 # user-side
 # login
@@ -130,7 +138,7 @@ def acceptRequest(data):
 	users = receivers["users"]
 
 	socket.emit("updateRequests", data, to=locations)
-	socket.emit("addToNotifications", data, to=users)
+	socket.emit("updateNotifications", data, to=users)
 
 @socket.on("socket/confirmRequest")
 def confirmRequest(data):
@@ -141,17 +149,18 @@ def confirmRequest(data):
 		users = receivers["users"]
 
 		socket.emit("updateSchedules", data, to=locations)
-		socket.emit("addToNotifications", data, to=users)
+		socket.emit("updateNotifications", data, to=users)
 	else:
 		socket.emit("updateSchedules", data, to=receivers)
 
-@socket.on("socket/closeRequest")
-def closeRequest(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+@socket.on("socket/closeSchedule")
+def closeSchedule(data):
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
-@socket.on("socket/cancelService")
-def cancelService(data):
-	socket.emit("updateRequests", data, to=data["receiver"])
+@socket.on("socket/cancelRequest")
+def cancelRequest(data):
+	socket.emit("updateRequests", data, to=data["receivers"]["owners"])
+	socket.emit("updateNotifications", data, to=data["receivers"]["users"])
 
 @socket.on("socket/allowPayment")
 def allowPayment(data):
@@ -180,7 +189,7 @@ def confirmPayment(data):
 # cart
 @socket.on("socket/updateCallfor")
 def updateCallfor(receiver):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
 
 @socket.on("socket/removeCallfor")
@@ -198,7 +207,7 @@ def makeReservation(data):
 	users = data["receivingUsers"]
 
 	socket.emit("updateRequests", data, to=locations)
-	socket.emit("addToNotifications", data, to=users)
+	socket.emit("updateNotifications", data, to=users)
 	socket.emit("updateNumNotifications", data, to=users)
 
 # order
@@ -213,12 +222,12 @@ def sendOrders(data):
 
 @socket.on("socket/addDiners")
 def addDiners(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
 
 @socket.on("socket/addItemtoorder")
 def addItemtoorder(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
 
 @socket.on("socket/cancelDiningorder")
@@ -231,18 +240,19 @@ def confirmDiningOrder(data):
 
 @socket.on("socket/deleteOrder")
 def deleteOrder(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # itemprofile
 @socket.on("socket/addItemtocart")
 def addItemtocart(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
 
 # dinersorders
 @socket.on("socket/getDinersPayments")
 def getDinersPayments(data):
-	socket.emit("addToNotifications", data, to=data["receiver"])
+	socket.emit("updateNotifications", data, to=data["receiver"])
+	socket.emit("updateNumNotifications", to=data["receiver"])
 
 if __name__ == "__main__":
 	socket.run(app, host=apphost, port=5002, use_reloader=True)
