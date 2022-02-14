@@ -100,9 +100,15 @@ def makeReservation(data):
 def deleteReservation(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 
+@socket.on("socket/receiveDinersPayments")
+def receiveDinersPayment(data):
+	socket.emit("updateNotifications", data, to=data["receiver"])
+	socket.emit("updateNumNotifications", to=data["receiver"])
+	socket.emit("updateOrder", data, to=data["receiver"])
+
 # diningorders
-@socket.on("socket/deliverRound")
-def deliverRound(data):
+@socket.on("socket/serveRound")
+def serveRound(data):
 	socket.emit("updateRounds", data, to=data["receiver"])
 
 @socket.on("socket/setOrderPrice")
@@ -126,9 +132,9 @@ def logout(id):
 	leave_room("user" + str(id))
 
 # booktime
-@socket.on("socket/requestAppointment")
-def requestAppointment(data):
-	socket.emit("updateRequests", data, to=data["receiver"])
+@socket.on("socket/makeAppointment")
+def makeAppointment(data):
+	socket.emit("updateSchedules", data, to=data["receiver"])
 
 # notifications
 @socket.on("socket/acceptRequest")
@@ -159,8 +165,11 @@ def closeSchedule(data):
 
 @socket.on("socket/cancelRequest")
 def cancelRequest(data):
-	socket.emit("updateRequests", data, to=data["receivers"]["owners"])
-	socket.emit("updateNotifications", data, to=data["receivers"]["users"])
+	if data["locationType"] == "restaurant":
+		socket.emit("updateRequests", data, to=data["receivers"]["owners"])
+		socket.emit("updateNotifications", data, to=data["receivers"]["users"])
+	else:
+		socket.emit("updateSchedules", data, to=data["receivers"]["owners"])
 
 @socket.on("socket/allowPayment")
 def allowPayment(data):
@@ -247,12 +256,6 @@ def deleteOrder(data):
 def addItemtocart(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
-
-# dinersorders
-@socket.on("socket/getDinersPayments")
-def getDinersPayments(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-	socket.emit("updateNumNotifications", to=data["receiver"])
 
 if __name__ == "__main__":
 	socket.run(app, host=apphost, port=5002, use_reloader=True)
