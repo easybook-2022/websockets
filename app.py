@@ -32,43 +32,16 @@ def logout(id):
 	leave_room("owner" + str(id))
 
 # main
-@socket.on("socket/setProductPrice")
-def setProductPrice(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
 @socket.on("socket/doneService")
 def doneService(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 
-@socket.on("socket/canServeDiners")
-def canServeDiners(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
-@socket.on("socket/business/cancelRequest")
-def cancelRequest(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
-@socket.on("socket/business/acceptRequest")
-def acceptRequest(data):
-	receivers = data["receivers"]
-	booker = receivers["booker"]
-	users = receivers["users"]
-	locations = receivers["locations"]
-
-	socket.emit("updateRequests", data, to=locations)
-	socket.emit("updateNotifications", data, to=booker)
-	socket.emit("updateNotifications", data, to=users)
-
-@socket.on("socket/business/cancelReservation")
-def cancelReservation(data):
+@socket.on("socket/business/cancelSchedule")
+def cancelSchedule(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 
 @socket.on("socket/business/cancelAppointment")
 def cancelAppointment(data):
-	socket.emit("updateNotifications", data, to=data['receiver'])
-
-@socket.on("socket/business/requestPayment")
-def requestPayment(data):
 	socket.emit("updateNotifications", data, to=data['receiver'])
 
 
@@ -82,38 +55,9 @@ def rescheduleAppointment(data):
 def orderReady(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 
-@socket.on("socket/productPurchased")
-def productPurchased(data):
+@socket.on("socket/orderDone")
+def orderDone(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
-
-@socket.on("socket/receivePayment")
-def receivePayment(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
-# makereservation
-@socket.on("socket/business/rescheduleReservation")
-def makeReservation(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
-# dinersorders
-@socket.on("socket/deleteReservation")
-def deleteReservation(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
-@socket.on("socket/receiveDinersPayments")
-def receiveDinersPayment(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-	socket.emit("updateNumNotifications", to=data["receiver"])
-	socket.emit("updateOrder", data, to=data["receiver"])
-
-# diningorders
-@socket.on("socket/serveRound")
-def serveRound(data):
-	socket.emit("updateRounds", data, to=data["receiver"])
-
-@socket.on("socket/setOrderPrice")
-def setOrderPrice(data):
-	socket.emit("updateRounds", data, to=data["receiver"])
 
 # user-side
 # login
@@ -137,28 +81,6 @@ def makeAppointment(data):
 	socket.emit("updateSchedules", data, to=data["receiver"])
 
 # notifications
-@socket.on("socket/acceptRequest")
-def acceptRequest(data):
-	receivers = data["receivers"]
-	locations = receivers["locations"]
-	users = receivers["users"]
-
-	socket.emit("updateRequests", data, to=locations)
-	socket.emit("updateNotifications", data, to=users)
-
-@socket.on("socket/confirmRequest")
-def confirmRequest(data):
-	receivers = data["receivers"]
-
-	if data["socketType"] == "restaurant":
-		locations = receivers["locations"]
-		users = receivers["users"]
-
-		socket.emit("updateSchedules", data, to=locations)
-		socket.emit("updateNotifications", data, to=users)
-	else:
-		socket.emit("updateSchedules", data, to=receivers)
-
 @socket.on("socket/closeSchedule")
 def closeSchedule(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
@@ -171,18 +93,6 @@ def cancelRequest(data):
 	else:
 		socket.emit("updateSchedules", data, to=data["receivers"]["owners"])
 
-@socket.on("socket/allowPayment")
-def allowPayment(data):
-	socket.emit("updateSchedules", data, to=data["receiver"])
-
-@socket.on("socket/sendDiningPayment")
-def sendDiningPayment(data):
-	socket.emit("sendDiningPayment", data, to=data["receiver"])
-
-@socket.on("socket/acceptReservationJoining")
-def acceptReservationJoining(data):
-	socket.emit("updateDiners", data, to=data["receiver"])
-
 @socket.on("socket/cancelCartOrder")
 def cancelCartOrder(data):
 	socket.emit("updateOrderers", data, to=data["receiver"])
@@ -191,65 +101,10 @@ def cancelCartOrder(data):
 def confirmCartOrder(data):
 	socket.emit("updateOrderers", data, to=data["receiver"])
 
-@socket.on("socket/confirmPayment")
-def confirmPayment(data):
-	socket.emit("updateSchedules", data, to=data["receiver"])
-
 # cart
-@socket.on("socket/updateCallfor")
-def updateCallfor(receiver):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-	socket.emit("updateNumNotifications", data, to=data["receiver"])
-
-@socket.on("socket/removeCallfor")
-def removeCallfor(receiver):
-	socket.emit("updateNumNotifications", data, to=data["receiver"])
-
 @socket.on("socket/checkoutCart")
 def checkoutCart(data):
 	socket.emit("updateOrders", data, to=data["receiver"])
-
-# makereservation
-@socket.on("socket/makeReservation")
-def makeReservation(data):
-	locations = data["receivingLocations"]
-	users = data["receivingUsers"]
-
-	socket.emit("updateRequests", data, to=locations)
-	socket.emit("updateNotifications", data, to=users)
-	socket.emit("updateNumNotifications", data, to=users)
-
-# order
-@socket.on("socket/sendOrders")
-def sendOrders(data):
-	locations = data["receiverLocations"]
-	diners = data["receiverDiners"]
-
-	socket.emit("updateCustomerOrders", data, to=locations)
-	socket.emit("updateRounds", data, to=diners)
-	socket.emit("updateRounds", data, to=locations)
-
-@socket.on("socket/addDiners")
-def addDiners(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-	socket.emit("updateNumNotifications", data, to=data["receiver"])
-
-@socket.on("socket/addItemtoorder")
-def addItemtoorder(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-	socket.emit("updateNumNotifications", data, to=data["receiver"])
-
-@socket.on("socket/cancelDiningorder")
-def cancelDiningorder(data):
-	socket.emit("updateRounds", data, to=data["receiver"])
-
-@socket.on("socket/confirmDiningOrder")
-def confirmDiningOrder(data):
-	socket.emit("updateRounds", data, to=data["receiver"])
-
-@socket.on("socket/deleteOrder")
-def deleteOrder(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # itemprofile
 @socket.on("socket/addItemtocart")
