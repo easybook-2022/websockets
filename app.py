@@ -51,13 +51,10 @@ def rescheduleAppointment(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 
 # cartorders
-@socket.on("socket/orderReady")
-def orderReady(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
-
 @socket.on("socket/orderDone")
 def orderDone(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
+	socket.emit("updateSeeorders", data, to=data["receiver"])
 
 # user-side
 # login
