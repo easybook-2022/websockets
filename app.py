@@ -56,6 +56,10 @@ def orderDone(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateSeeorders", data, to=data["receiver"])
 
+@socket.on("socket/setWaitTime")
+def setWaitTime(data):
+	socket.emit("updateNotifications", data, to=data["receiver"])
+
 # user-side
 # login
 @socket.on("socket/user/login")
