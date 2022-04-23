@@ -6,7 +6,6 @@ test = True
 server_url = "0.0.0.0"
 local_url = "192.168.0.172"
 apphost = server_url if test == False else local_url
-clients = []
 
 app = Flask(__name__)
 socket = SocketIO(app, cors_allowed_origins="*")
@@ -19,16 +18,10 @@ def welcome():
 # auth
 @socket.on("socket/business/login")
 def login(id):
-	if "owner" + str(id) not in clients:
-		clients.append("owner" + str(id))
-
 	join_room("owner" + str(id))
 
 @socket.on("socket/business/logout")
 def logout(id):
-	if "owner" + str(id) in clients:
-		clients.remove("owner" + str(id))
-
 	leave_room("owner" + str(id))
 
 # main
@@ -64,16 +57,10 @@ def setWaitTime(data):
 # login
 @socket.on("socket/user/login")
 def login(id):
-	if "user" + str(id) not in clients:
-		clients.append("user" + str(id))
-
 	join_room("user" + str(id))
 
 @socket.on("socket/user/logout")
 def logout(id):
-	if "user" + str(id) in clients:
-		clients.remove("user" + str(id))
-
 	leave_room("user" + str(id))
 
 # booktime
