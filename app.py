@@ -68,6 +68,10 @@ def logout(id):
 def makeAppointment(data):
 	socket.emit("updateSchedules", data, to=data["receiver"])
 
+@socket.on("socket/salonChangeAppointment")
+def salonChangeAppointment(data):
+	socket.emit("updateNotifications", data, to=data["receiver"])
+
 # notifications
 @socket.on("socket/closeSchedule")
 def closeSchedule(data):
