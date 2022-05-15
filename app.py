@@ -37,7 +37,6 @@ def cancelSchedule(data):
 def cancelAppointment(data):
 	socket.emit("updateNotifications", data, to=data['receiver'])
 
-
 # booktime
 @socket.on("socket/rescheduleAppointment")
 def rescheduleAppointment(data):
@@ -52,6 +51,7 @@ def orderDone(data):
 @socket.on("socket/setWaitTime")
 def setWaitTime(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
+	socket.emit("updateSeeorders", data, to=data["receiver"])
 
 # user-side
 # login
