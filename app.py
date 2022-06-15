@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 test = True
 
 server_url = "0.0.0.0"
-local_url = "192.168.0.172"
+local_url = "10.0.0.60"
 apphost = server_url if test == False else local_url
 
 app = Flask(__name__)
