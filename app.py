@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 test = True
 
 server_url = "0.0.0.0"
-local_url = "192.168.2.107"
+local_url = "10.0.0.60"
 apphost = server_url if test == False else local_url
 
 app = Flask(__name__)
@@ -107,6 +107,11 @@ def checkoutCart(data):
 def addItemtocart(data):
 	socket.emit("updateNotifications", data, to=data["receiver"])
 	socket.emit("updateNumNotifications", data, to=data["receiver"])
+
+# dining table
+@socket.on("socket/orderMeal")
+def orderMeal(data):
+	socket.emit("updateTableOrders", data, to=data["receiver"])
 
 if __name__ == "__main__":
 	socket.run(app, host=apphost, port=5002, use_reloader=True)
