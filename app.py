@@ -12,7 +12,7 @@ socket = SocketIO(app, cors_allowed_origins="*")
 
 @app.route("/socket")
 def welcome():
-	return { "msg": "This is EasygGO websocket" }
+	return { "msg": "This is EasyBook websocket" }
 	
 # business-side
 # auth
