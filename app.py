@@ -41,6 +41,11 @@ def cancelAppointment(data):
 def pushAppointments(data):
 	socket.emit("updateNotifications", data, to=data['receiver'])
 
+# walk in
+@socket.on("socket/business/bookWalkIn")
+def bookWalkIn(data):
+	socket.emit("updateSchedules", data, to=data["receiver"])
+
 # booktime
 @socket.on("socket/rescheduleAppointment")
 def rescheduleAppointment(data):
