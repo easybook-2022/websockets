@@ -79,7 +79,13 @@ def makeAppointment(data):
 
 @socket.on("socket/salonChangeAppointment")
 def salonChangeAppointment(data):
-	socket.emit("updateNotifications", data, to=data["receiver"])
+	if data["receiveType"] == "everyone":
+		receiver = data["receiver"]
+
+		socket.emit("updateSchedules", data, to=receiver["owners"])
+		socket.emit("updateNotifications", data, to=receiver["user"])
+	else:
+		socket.emit("updateNotifications", data, to=data["receiver"])
 
 # notifications
 @socket.on("socket/closeSchedule")
