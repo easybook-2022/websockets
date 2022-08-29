@@ -66,12 +66,10 @@ def setWaitTime(data):
 # login
 @socket.on("socket/user/login")
 def login(id):
-	print(str(id) + " login")
 	join_room("user" + str(id))
 
 @socket.on("socket/user/logout")
 def logout(id):
-	print(str(id) + " logout")
 	leave_room("user" + str(id))
 
 # booktime
